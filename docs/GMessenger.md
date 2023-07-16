@@ -1,0 +1,97 @@
+# GMessenger Documentation
+
+## Websocket
+Each message will follow the following pattern:
+```
+command,args(optional),data(b64)
+
+i.e.
+< omsg,general,hello
+> imsg,general,hello
+< omsg,test,hi
+> imsg,test,hi
+< chng,test_user,name,test
+> User with name, test_user, is now called, test.
+```
+
+## Channels
+Each server will have its own list of channels.
+Each channel will have its own UUID that gets encoded to B64
+Channels can NOT be deleted.
+
+### Create channel
+```
+< regi,chan,name
+> succ,id
+> fail,exist
+> fail,auth
+```
+
+### Subscribe to channel
+```
+< subs,username,session
+> succ
+> fail,auth
+```
+
+### Errors
+`auth`: Forbidden, not logged in
+`exist`: Channel Exists
+
+## Users
+Each client will have their **own** UUID that represents their session token.
+User Data type:
+```
+{
+    "username": "username",
+    "password": "password",
+}
+```
+
+### Sessions
+Sessions get deleted after a day.
+Sessions will be stored in the following format:
+```
+{
+    "session": "session",
+    "username": "username"
+}
+```
+
+### Register
+```
+i.e.
+< regi,user,username,password
+> succ,session
+> fail,exist
+```
+
+### Login
+```
+i.e.
+< logi,username,password
+> succ,session
+> fail,cred
+```
+
+### Logout
+```
+i.e.
+< logo,username
+> succ
+```
+
+### Errors
+`cred`: Invalid credentials
+`exist`: Username exists
+
+## Terminlogy
+msg = Message
+imsg = Incoming message
+omsg = Outgoing message
+logi = Login
+logo = Logout
+chng = Change
+cred = Credential
+succ = Success
+chan = Channel
