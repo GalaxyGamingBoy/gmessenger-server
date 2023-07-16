@@ -14,6 +14,8 @@ i.e.
 > User with name, test_user, is now called, test.
 ```
 
+**IF the command is not found the server will respond with `fail,icmd`**
+
 ## Channels
 Each server will have its own list of channels.
 Each channel will have its own UUID that gets encoded to B64
@@ -95,3 +97,4 @@ chng = Change
 cred = Credential
 succ = Success
 chan = Channel
+icmd = Invalid Commands
