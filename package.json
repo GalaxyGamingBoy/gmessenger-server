@@ -1,0 +1,29 @@
+{
+  "name": "gmessenger-server",
+  "version": "0.0.1",
+  "description": "The server of GMessenger",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "build:start": "npm run build && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GalaxyGamingBoy/gmessenger-server.git"
+  },
+  "author": "Marios Mitsios",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GalaxyGamingBoy/gmessenger-server/issues"
+  },
+  "homepage": "https://github.com/GalaxyGamingBoy/gmessenger-server#readme",
+  "dependencies": {
+    "sqlite3": "^5.1.6",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}
