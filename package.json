@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/GalaxyGamingBoy/gmessenger-server#readme",
   "dependencies": {
+    "@types/ws": "^8.5.5",
+    "dotenv": "^16.3.1",
+    "save-dev": "^0.0.1-security",
     "sqlite3": "^5.1.6",
     "ws": "^8.13.0"
   },
