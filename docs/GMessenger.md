@@ -21,9 +21,9 @@ Each server will have its own list of channels.
 Each channel will have its own UUID that gets encoded to B64
 Channels can NOT be deleted.
 
-### Create channel
+### Create channel*
 ```
-< regi,chan,name
+< regi,chan,name,username,session
 > succ,id
 > fail,exist
 > fail,auth
@@ -34,6 +34,12 @@ Channels can NOT be deleted.
 < subs,username,session
 > succ
 > fail,auth
+```
+
+### Get channels*
+```
+< get,chan
+> channel,channel,channel
 ```
 
 ### Errors
@@ -47,6 +53,7 @@ User Data type:
 {
     "username": "username",
     "password": "password",
+    "channels": "[channels]"
 }
 ```
 
@@ -60,7 +67,7 @@ Sessions will be stored in the following format:
 }
 ```
 
-### Register
+### Register*
 ```
 i.e.
 < regi,user,username,password
@@ -68,7 +75,7 @@ i.e.
 > fail,exist
 ```
 
-### Login
+### Login*
 ```
 i.e.
 < logi,username,password
@@ -76,7 +83,7 @@ i.e.
 > fail,cred
 ```
 
-### Logout
+### Logout*
 ```
 i.e.
 < logo,username
@@ -86,6 +93,9 @@ i.e.
 ### Errors
 `cred`: Invalid credentials
 `exist`: Username exists
+
+## General Errors
+`cmdp`: Command Parse Fail, check if all arguements are provided.
 
 ## Terminlogy
 msg = Message
