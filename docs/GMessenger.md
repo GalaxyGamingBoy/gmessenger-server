@@ -29,7 +29,7 @@ Channels can NOT be deleted.
 
 ### Subscribe to channel
 ```
-< subs,username,session
+< subs,username,session,channel
 > succ
 > fail,auth
 ```
