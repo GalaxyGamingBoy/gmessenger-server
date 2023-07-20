@@ -6,10 +6,8 @@ Each message will follow the following pattern:
 command,args(optional),data(b64)
 
 i.e.
-< omsg,general,hello
-> imsg,general,hello
-< omsg,test,hi
-> imsg,test,hi
+< omsg,general,username,session,hello
+> imsg,general,username,hello
 < chng,test_user,name,test
 > User with name, test_user, is now called, test.
 ```
@@ -88,6 +86,12 @@ i.e.
 i.e.
 < logo,username
 > succ
+```
+
+### Change Name
+```
+< chng,test_user,session,name,test
+> User with name, test_user, is now called, test.
 ```
 
 ### Errors
