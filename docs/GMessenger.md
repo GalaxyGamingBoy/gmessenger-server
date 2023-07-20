@@ -108,3 +108,5 @@ cred = Credential
 succ = Success
 chan = Channel
 icmd = Invalid Commands
+
+*: Done
