@@ -1,8 +1,20 @@
 import { WebSocketServer } from "ws";
 import { commands } from "./commands/commands";
+import { sendSQL } from "./db/db";
+import { loadChannels } from "./channels/channels";
 require("dotenv").config();
 
 const wss = new WebSocketServer({ port: Number(process.env.PORT) || 8080 });
+
+sendSQL(
+    "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT, channels TEXT);"
+);
+
+sendSQL("CREATE TABLE channels (id INTEGER PRIMARY KEY, name TEXT);")
+    .then((_) => sendSQL("INSERT INTO channels (name) VALUES ('welcome');"))
+    .catch((_) => console.log("Channel table already exists"));
+
+loadChannels();
 
 wss.on("connection", (ws) => {
     ws.send(`Hello, Welcome to GMessenger!`);
