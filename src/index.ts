@@ -98,6 +98,22 @@ app.post("/validate", async (req, res) => {
     });
 });
 
+app.post("/logout", async (req, res) => {
+    if (!req.body.username && !req.body.token) {
+        res.status(422).end("Username or Token not found, check request");
+        return;
+    }
+
+    jwt.verify(req.body.token, process.env.JWT_SECRET, (err) => {
+        if (err) {
+            res.status(403).json({ result: false, msg: 'JWT Invalud' })
+        } else {
+            loggedUsers.delete(req.body.username)
+            res.status(200).json({ result: true });
+        }
+    });
+});
+
 const expressServer = app.listen(process.env.PORT || 8080, () =>
     console.log(`Server started in: ${process.env.PORT || 8080}!`)
 );
