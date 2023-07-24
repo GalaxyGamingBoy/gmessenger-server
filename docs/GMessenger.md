@@ -15,7 +15,7 @@ i.e.
 
 ## Channels*
 Each server will have its own list of channels.
-Each channel will have its own UUID that gets encoded to B64
+Each channel will have its own account
 Channels can NOT be deleted.
 
 ### Create channel*
