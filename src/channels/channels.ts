@@ -11,3 +11,11 @@ export const loadChannels = async () => {
         channelsPerUser.set(user.username, JSON.parse(user.channels))
     })
 };
+
+export const channelExist = async (name: string): Promise<boolean> => {
+    const existSQL = await sendSQL(
+        `SELECT 'FOUND' FROM channels WHERE name='${name}';`
+    );
+
+    return JSON.parse(existSQL).length > 0;
+};
