@@ -1,43 +1,54 @@
 # GMessenger Documentation
 
-## Websocket
+## Websocket*
+To use websocket a token paramerter must be made with the JWT token
 Each message will follow the following pattern:
 ```
 command,args(optional),data(b64)
 
 i.e.
-< omsg,general,username,session,hello
+< omsg,general,hello
 > imsg,general,username,hello
-< chng,test_user,name,test
-> User with name, test_user, is now called, test.
 ```
 
 **IF the command is not found the server will respond with `fail,icmd`**
 
-## Channels
+## Channels*
 Each server will have its own list of channels.
 Each channel will have its own UUID that gets encoded to B64
 Channels can NOT be deleted.
 
 ### Create channel*
 ```
-< regi,chan,name,username,session
+< regi,chan,name
 > succ,id
 > fail,exist
 > fail,auth
 ```
 
-### Subscribe to channel
+### Subscribe to channel*
 ```
-< subs,username,session,channel
+< subs,channel
 > succ
-> fail,auth
+> fail,exist
+```
+
+### UnSubscribe to channel*
+```
+< usub,channel
+> succ
 ```
 
 ### Get channels*
 ```
 < get,chan
-> channel,channel,channel
+> [channel,channel,channel]
+```
+
+### Get user subscribed channels*
+```
+< get,sub_chan
+> [channel,channel,channel]
 ```
 
 ### Errors
@@ -55,43 +66,53 @@ User Data type:
 }
 ```
 
-### Sessions
-Sessions get deleted after a day.
-Sessions will be stored in the following format:
-```
+### Register*
+`/register` **POST** method.
+Body:
+```json
 {
-    "session": "session",
-    "username": "username"
+    "username": "username",
+    "password": "password"
+}
+``` 
+
+Return:
+```json
+{
+    "jwt": "JWT TOKEN"
 }
 ```
 
-### Register*
-```
-i.e.
-< regi,user,username,password
-> succ,session
-> fail,exist
-```
-
 ### Login*
-```
-i.e.
-< logi,username,password
-> succ,session
-> fail,cred
+`/login` **POST** method.
+Body:
+```json
+{
+    "username": "username",
+    "password": "password"
+}
+``` 
+
+Return:
+```json
+{
+    "jwt": "JWT TOKEN"
+}
 ```
 
-### Logout*
-```
-i.e.
-< logo,username
-> succ
+### Validate JWT*
+`/validate` **POST** method.
+```json
+{
+    "jwt": "TOKEN"
+}
 ```
 
-### Change Name
-```
-< chng,test_user,session,name,test
-> User with name, test_user, is now called, test.
+Return:
+```json
+{
+    "result": true || false
+}
 ```
 
 ### Errors
