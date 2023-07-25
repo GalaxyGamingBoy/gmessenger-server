@@ -139,7 +139,7 @@ Return:
 
 ### Logout JWT\*
 
-`/validate` **POST** method.
+`/logout` **POST** method.
 
 ```json
 {
