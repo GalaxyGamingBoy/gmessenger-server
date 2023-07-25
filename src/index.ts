@@ -46,12 +46,13 @@ app.post("/login", async (req, res) => {
                     process.env.JWT_SECRET,
                     { expiresIn: 86400 }
                 ),
+                result: true
             });
         } else {
-            res.status(403).end("Already logged in");
+            res.status(403).json({ result: false, msg: "Already logged in" });
         }
     } else {
-        res.status(422).end("Authentication Error");
+        res.status(422).json({ result: false, msg: "Authentication Error" });
     }
 });
 
@@ -62,6 +63,11 @@ app.post("/register", async (req, res) => {
     }
     const username = req.body.username;
     const password = req.body.password;
+
+    if (await userExists(username)) {
+        res.status(422).json({ result: false, msg: "User already exists" })
+        return;
+    }
 
     await sendSQL(
         `INSERT INTO users (username, password, channels) values ('${username}', '${await hash(
@@ -79,6 +85,7 @@ app.post("/register", async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: 86400 }
         ),
+        result: true
     });
 });
 
@@ -106,7 +113,7 @@ app.post("/logout", async (req, res) => {
 
     jwt.verify(req.body.token, process.env.JWT_SECRET, (err) => {
         if (err) {
-            res.status(403).json({ result: false, msg: 'JWT Invalud' })
+            res.status(403).json({ result: false, msg: 'JWT Invalid' })
         } else {
             loggedUsers.delete(req.body.username)
             res.status(200).json({ result: true });
