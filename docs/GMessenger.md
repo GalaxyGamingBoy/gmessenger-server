@@ -23,56 +23,106 @@ Channels can NOT be deleted.
 
 ### Create channel\*
 
+`/register/channel` **POST** method.
+Header:
+
 ```
-< regi,chan,name
-> regi,chan,succ,id
-> regi,chan,fail,exist
+X-JWT=TOKEN
 ```
+
+Body:
+
+```json
+{
+  "name": "channel"
+}
+```
+
+Returns:
+`200` / `409` / `403`
 
 ### Subscribe to channel\*
 
-```
-< subs,channel
-> subs,succ
-> subs,fail,exist
-```
-
-### UnSubscribe to channel\*
+`/subscribe/channel` **POST** method.
+Header:
 
 ```
-< usub,channel
-> usub,succ
+X-JWT=TOKEN
 ```
+
+Body:
+
+```json
+{
+  "name": "channel"
+}
+```
+
+Returns:
+`200` / `409` / `403`
+
+### Unsubscribe to channel\*
+
+`/register/channel` **POST** method.
+Header:
+
+```
+X-JWT=TOKEN
+```
+
+Body:
+
+```json
+{
+  "name": "channel"
+}
+```
+
+Returns:
+`200` / `409` / `403`
 
 ### Get channels\*
 
-```
-< get,chan
-> get,chan,[channel,channel,channel]*b64
+`/register/channel` **GET** method.
+
+Returns:
+`200`
+
+```json
+{
+  "channels": []
+}
 ```
 
 ### Get user subscribed channels\*
 
+`/get/subscribed` **GET** method.
+Header:
+
 ```
-< get,sub_chan
-> get,[channel,channel,channel]*b64
+X-JWT=TOKEN
 ```
 
-### Errors
+Body:
 
-`auth`: Forbidden, not logged in
-`exist`: Channel Exists
+```json
+{
+  "name": "channel"
+}
+```
+
+Returns:
+`200` / `403`
 
 ## Users
 
-Each client will have their **own** UUID that represents their session token.
 User Data type:
 
-```
+```json
 {
-    "username": "username",
-    "password": "password",
-    "channels": "[channels]"
+  "username": "username",
+  "password": "password",
+  "channels": "[channels]"
 }
 ```
 
@@ -89,12 +139,25 @@ Body:
 ```
 
 Return:
+`200` / `422`
 
 ```json
 {
+  "result": true,
   "jwt": "JWT TOKEN"
 }
 ```
+
+If error:
+
+```json
+{
+  "result": false,
+  "msg": ""
+}
+```
+
+`msg` Contains the error message.
 
 ### Login\*
 
@@ -109,12 +172,25 @@ Body:
 ```
 
 Return:
+`200` / `403` / `422`
 
 ```json
 {
+  "result": true,
   "jwt": "JWT TOKEN"
 }
 ```
+
+If error:
+
+```json
+{
+  "result": false,
+  "msg": ""
+}
+```
+
+`msg` Contains the error message.
 
 ### Validate JWT\*
 
@@ -127,6 +203,7 @@ Return:
 ```
 
 Return:
+`200` / `422`
 
 ```json
 {
@@ -153,10 +230,14 @@ Return:
 }
 ```
 
-### Errors
+If error:
 
-`cred`: Invalid credentials
-`exist`: Username exists
+```json
+{
+  "result": false,
+  "msg": ""
+}
+```
 
 ## General Errors
 
@@ -164,15 +245,8 @@ Return:
 
 ## Terminlogy
 
-msg = Message
-imsg = Incoming message
-omsg = Outgoing message
-logi = Login
-logo = Logout
-chng = Change
-cred = Credential
-succ = Success
-chan = Channel
-icmd = Invalid Commands
-
+msg = Message  
+imsg = Incoming message  
+omsg = Outgoing message  
+b64 = Base 64  
 \*: Done

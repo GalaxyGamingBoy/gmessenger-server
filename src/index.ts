@@ -10,14 +10,30 @@ import { loadChannels } from "./channels/channels";
 import { compare, genSalt, hash } from "bcrypt";
 import { IncomingMessage } from "http";
 import { loggedUsers, userExists } from "./users/users";
+import { Strategy, ExtractJwt } from "passport-jwt";
+import passport from "passport";
 require("dotenv").config();
 
 const app = express();
 app.use(bp.json());
 app.use(cors());
 
+// Add passport
+passport.use(new Strategy({
+    jwtFromRequest: ExtractJwt.fromHeader('X-JWT'),
+    secretOrKey: process.env.JWT_SECRET
+}, (payload, done) => {
+    if (loggedUsers.has(payload.username)) {
+        done(null, payload)
+    } else {
+        done(null, false)
+    }
+}))
+
+// Main route
 app.get("/", (_, res) => res.status(200).end("GMessenger Live!"));
 
+// Login route
 app.post("/login", async (req, res) => {
     if (!req.body.username && !req.body.password) {
         res.status(422).end("Username or password *missing*!");
@@ -56,6 +72,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// Register route
 app.post("/register", async (req, res) => {
     if (!req.body.username && !req.body.password) {
         res.status(422).end("Username or password *missing*!");
@@ -89,6 +106,7 @@ app.post("/register", async (req, res) => {
     });
 });
 
+// Validate JWT route
 app.post("/validate", async (req, res) => {
     if (!req.body.jwt) {
         res.status(422).end("JWT Token *missing*!");
@@ -105,6 +123,7 @@ app.post("/validate", async (req, res) => {
     });
 });
 
+// Logout route
 app.post("/logout", async (req, res) => {
     if (!req.body.username && !req.body.token) {
         res.status(422).end("Username or Token not found, check request");
@@ -121,12 +140,15 @@ app.post("/logout", async (req, res) => {
     });
 });
 
+// Express server
 const expressServer = app.listen(process.env.PORT || 8080, () =>
     console.log(`Server started in: ${process.env.PORT || 8080}!`)
 );
 
+// Websocket server
 const wss = new WebSocketServer({ server: expressServer, path: "/socket" });
 
+// Init SQL
 const initSQL = async () => {
     await sendSQL(
         "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT, channels TEXT);"
@@ -141,6 +163,7 @@ const initSQL = async () => {
 
 initSQL();
 
+// Init Websocket
 wss.on("connection", (ws, req) => {
     ws.send(`Hello, Welcome to GMessenger!`);
     ws.send("Checking JWT authentication");
