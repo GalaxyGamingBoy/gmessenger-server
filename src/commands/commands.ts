@@ -26,15 +26,13 @@ commands.set(
                         sendSQL(
                             `INSERT INTO channels (name) VALUES ('${channelName}')`
                         );
-                        ws.send(`succ,${channelName}`);
+                        ws.send(`regi,chan,succ,${channelName}`);
                     } else {
-                        ws.send("fail,exist");
+                        ws.send("regi,chan,fail,exist");
                     }
                 }
-            } else if (type == "sub_chan") {
-                ws.send(`succ,${channelsPerUser.get(username)}`);
             } else {
-                ws.send("fail,cmdp");
+                ws.send("regi,fail,cmdp");
             }
         }
     }
@@ -49,14 +47,14 @@ commands.set(
                 const query = JSON.parse(
                     await sendSQL("SELECT name FROM channels;")
                 ) as Array<{ name: string }>;
-                ws.send(JSON.stringify(query.map((e) => e.name)));
+                ws.send(`get,chan,${Buffer.from(JSON.stringify(query.map((e) => e.name))).toString("base64")}`);
             } else if (type == "sub_chan") {
-                ws.send(JSON.stringify(channelsPerUser.get(username)));
+                ws.send(`get,sub_chan,${Buffer.from(JSON.stringify(channelsPerUser.get(username))).toString("base64")}`);
             } else {
-                ws.send("fail,cmdp");
+                ws.send("get,fail,cmdp");
             }
         } else {
-            ws.send("fail,cmdp");
+            ws.send("get,fail,cmdp");
         }
     }
 );
@@ -73,12 +71,12 @@ commands.set(
                         channelsPerUser.get(username)
                     )}' WHERE username='${username}'`
                 );
-                ws.send("succ");
+                ws.send("subs,succ");
             } else {
-                ws.send("fail,exist");
+                ws.send("subs,fail,exist");
             }
         } else {
-            ws.send("fail,cmdp");
+            ws.send("subs,fail,cmdp");
         }
     }
 );
@@ -99,8 +97,10 @@ commands.set(
                     channelsPerUser.get(username)
                 )}' WHERE username='${username}'`
             );
+
+            ws.send("usub,succ");
         } else {
-            ws.send("fail,cmdp");
+            ws.send("usub,fail,cmdp");
         }
     }
 );
@@ -113,14 +113,14 @@ commands.set(
             const msg = args[2];
 
             channelsPerUser.forEach((v, k) => {
-                if (v.indexOf(String(channel)) != -1) {
+                if (k == username && v.indexOf(String(channel)) != -1) {
                     loggedUsers
-                        .get(k)
+                        .get(username)
                         .send(`imsg,${channel},${username},${msg}`);
                 }
             });
         } else {
-            ws.send("fail,cmdp");
+            ws.send("omsg,fail,cmdp");
         }
     }
 );

@@ -9,8 +9,8 @@ Each message will follow the following pattern:
 command,args(optional),data(b64)
 
 i.e.
-< omsg,general,hello
-> imsg,general,username,hello
+< omsg,general,hello*b64
+> imsg,general,username,hello*b64
 ```
 
 **IF the command is not found the server will respond with `fail,icmd`**
@@ -25,40 +25,37 @@ Channels can NOT be deleted.
 
 ```
 < regi,chan,name
-> succ,id
-> fail,exist
-> fail,auth
+> regi,chan,succ,id
+> regi,chan,fail,exist
 ```
-
-configure
 
 ### Subscribe to channel\*
 
 ```
 < subs,channel
-> succ
-> fail,exist
+> subs,succ
+> subs,fail,exist
 ```
 
 ### UnSubscribe to channel\*
 
 ```
 < usub,channel
-> succ
+> usub,succ
 ```
 
 ### Get channels\*
 
 ```
 < get,chan
-> [channel,channel,channel]
+> get,chan,[channel,channel,channel]*b64
 ```
 
 ### Get user subscribed channels\*
 
 ```
 < get,sub_chan
-> [channel,channel,channel]
+> get,[channel,channel,channel]*b64
 ```
 
 ### Errors
