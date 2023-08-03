@@ -5,7 +5,7 @@
 To use websocket a token paramerter must be made with the JWT token
 Each message will follow the following pattern:
 
-```
+```txt
 command,args(optional),data(b64)
 
 i.e.
@@ -26,7 +26,7 @@ Channels can NOT be deleted.
 `/register/channel` **POST** method.
 Header:
 
-```
+```txt
 X-JWT=TOKEN
 ```
 
@@ -53,7 +53,7 @@ Returns:
 `/subscribe/channel` **POST** method.
 Header:
 
-```
+```txt
 X-JWT=TOKEN
 ```
 
@@ -73,7 +73,7 @@ Returns:
 `/register/channel` **POST** method.
 Header:
 
-```
+```txt
 X-JWT=TOKEN
 ```
 
@@ -106,7 +106,7 @@ Returns:
 `/get/subscribed` **GET** method.
 Header:
 
-```
+```txt
 X-JWT=TOKEN
 ```
 
