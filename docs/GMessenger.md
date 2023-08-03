@@ -27,7 +27,7 @@ Channels can NOT be deleted.
 Header:
 
 ```txt
-X-JWT=TOKEN
+x-jwt=TOKEN
 ```
 
 Body:
@@ -54,7 +54,7 @@ Returns:
 Header:
 
 ```txt
-X-JWT=TOKEN
+x-jwt=TOKEN
 ```
 
 Body:
@@ -74,7 +74,7 @@ Returns:
 Header:
 
 ```txt
-X-JWT=TOKEN
+x-jwt=TOKEN
 ```
 
 Body:
@@ -107,7 +107,7 @@ Returns:
 Header:
 
 ```txt
-X-JWT=TOKEN
+x-jwt=TOKEN
 ```
 
 Body:

@@ -6,7 +6,8 @@ import url from "url";
 import { WebSocketServer } from "ws";
 import { commands } from "./commands/commands";
 import { sendSQL } from "./db/db";
-import { channelExist, loadChannels } from "./channels/channels";
+import { Request } from "express";
+import { channelExist, channelsPerUser, loadChannels } from "./channels/channels";
 import { compare, genSalt, hash } from "bcrypt";
 import { IncomingMessage } from "http";
 import { loggedUsers, userExists } from "./users/users";
@@ -19,9 +20,15 @@ const app = express();
 app.use(bp.json());
 app.use(cors());
 
+export interface JWTRequest extends Request {
+    user: {
+        username: string
+    }
+}
+
 // Add passport
 passport.use(new Strategy({
-    jwtFromRequest: ExtractJwt.fromHeader('X-JWT'),
+    jwtFromRequest: ExtractJwt.fromHeader("x-jwt"),
     secretOrKey: process.env.JWT_SECRET
 }, (payload, done) => {
     if (loggedUsers.has(payload.username)) {
@@ -141,7 +148,7 @@ app.post("/logout", async (req, res) => {
     });
 });
 
-// Register Channe;
+// Register Channel
 app.post("/register/channel", passport.authenticate('jwt', { session: false }), async (req, res) => {
     if (req.body.name) {
         const channelName = validator
@@ -159,6 +166,27 @@ app.post("/register/channel", passport.authenticate('jwt', { session: false }), 
         }
     } else {
         res.status(422).json({ result: false, msg: 'Name parameter not found' })
+    }
+})
+
+// Subscribe to Channel
+app.post('/subscribe/channel', passport.authenticate('jwt', { session: false }), async (req: JWTRequest, res) => {
+    if (await channelExist(String(req.body.name))) {
+        const channel = req.body.name;
+        const username = req.user.username;
+
+        if (channelsPerUser.get(username).indexOf(String(channel)) == -1) {
+            channelsPerUser.get(username).push(String(channel));
+            await sendSQL(
+                `UPDATE users SET channels='${JSON.stringify(
+                    channelsPerUser.get(username)
+                )}' WHERE username='${username}'`
+            );
+
+            res.status(200).json({ result: true })
+        } else {
+            res.status(409).json({ result: true, msg: "Channel already subscribed" })
+        }
     }
 })
 

@@ -29,28 +29,6 @@ commands.set(
 );
 
 commands.set(
-    "subs",
-    async (ws: WebSocket, username: string, args: Array<String>) => {
-        if (args[1] && (await channelExist(String(args[1])))) {
-            const channel = args[1];
-            if (channelsPerUser.get(username).indexOf(String(channel)) == -1) {
-                channelsPerUser.get(username).push(String(channel));
-                await sendSQL(
-                    `UPDATE users SET channels='${JSON.stringify(
-                        channelsPerUser.get(username)
-                    )}' WHERE username='${username}'`
-                );
-                ws.send("subs,succ");
-            } else {
-                ws.send("subs,fail,exist");
-            }
-        } else {
-            ws.send("subs,fail,cmdp");
-        }
-    }
-);
-
-commands.set(
     "usub",
     async (ws: WebSocket, username: string, args: Array<String>) => {
         if (args[1]) {
