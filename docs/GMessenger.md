@@ -70,7 +70,7 @@ Returns:
 
 ### Unsubscribe to channel\*
 
-`/register/channel` **POST** method.
+`/unsubscribe/channel` **POST** method.
 Header:
 
 ```txt

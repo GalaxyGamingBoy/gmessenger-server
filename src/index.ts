@@ -187,6 +187,31 @@ app.post('/subscribe/channel', passport.authenticate('jwt', { session: false }),
         } else {
             res.status(409).json({ result: true, msg: "Channel already subscribed" })
         }
+    } else {
+        res.status(422).json({ result: false, msg: 'Name parameter not found' })
+    }
+})
+
+// Unsubcribe to Channel
+app.post('/unsubscribe/channel', passport.authenticate('jwt', { session: false }), async (req: JWTRequest, res) => {
+    if (req.body.name) {
+        const channel = req.body.name;
+        const username = req.user.username;
+
+        channelsPerUser.set(
+            req.user.username,
+            channelsPerUser.get(username).filter((e) => e != channel)
+        );
+
+        await sendSQL(
+            `UPDATE users SET channels='${JSON.stringify(
+                channelsPerUser.get(username)
+            )}' WHERE username='${username}'`
+        );
+
+        res.status(200).json({ result: true })
+    } else {
+        res.status(422).json({ result: false, msg: 'Name body parameter not found' })
     }
 })
 
