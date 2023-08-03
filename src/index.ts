@@ -6,12 +6,13 @@ import url from "url";
 import { WebSocketServer } from "ws";
 import { commands } from "./commands/commands";
 import { sendSQL } from "./db/db";
-import { loadChannels } from "./channels/channels";
+import { channelExist, loadChannels } from "./channels/channels";
 import { compare, genSalt, hash } from "bcrypt";
 import { IncomingMessage } from "http";
 import { loggedUsers, userExists } from "./users/users";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import passport from "passport";
+import validator from "validator";
 require("dotenv").config();
 
 const app = express();
@@ -139,6 +140,27 @@ app.post("/logout", async (req, res) => {
         }
     });
 });
+
+// Register Channe;
+app.post("/register/channel", passport.authenticate('jwt', { session: false }), async (req, res) => {
+    if (req.body.name) {
+        const channelName = validator
+            .escape(String(req.body.name))
+            .replace(" ", "_")
+            .toLocaleLowerCase();
+
+        if (!(await channelExist(String(channelName)))) {
+            sendSQL(
+                `INSERT INTO channels (name) VALUES ('${channelName}')`
+            );
+            res.status(200).json({ result: true, channel: channelName });
+        } else {
+            res.status(409).json({ result: false, msg: "Channel already exists" });
+        }
+    } else {
+        res.status(422).json({ result: false, msg: 'Name parameter not found' })
+    }
+})
 
 // Express server
 const expressServer = app.listen(process.env.PORT || 8080, () =>

@@ -39,7 +39,14 @@ Body:
 ```
 
 Returns:
-`200` / `409` / `403`
+`200` / `409` / `403` / `422`
+
+```json
+{
+  "result": true,
+  "channel": "channel"
+}
+```
 
 ### Subscribe to channel\*
 
@@ -148,15 +155,6 @@ Return:
 }
 ```
 
-If error:
-
-```json
-{
-  "result": false,
-  "msg": ""
-}
-```
-
 `msg` Contains the error message.
 
 ### Login\*
@@ -178,15 +176,6 @@ Return:
 {
   "result": true,
   "jwt": "JWT TOKEN"
-}
-```
-
-If error:
-
-```json
-{
-  "result": false,
-  "msg": ""
 }
 ```
 
@@ -230,18 +219,18 @@ Return:
 }
 ```
 
-If error:
+## General Errors
+
+`cmdp`: Command Parse Fail, check if all arguements are provided.
+
+In any API error it will return:
 
 ```json
 {
   "result": false,
-  "msg": ""
+  "msg": "msg"
 }
 ```
-
-## General Errors
-
-`cmdp`: Command Parse Fail, check if all arguements are provided.
 
 ## Terminlogy
 

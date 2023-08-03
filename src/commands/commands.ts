@@ -1,7 +1,4 @@
 import { sendSQL } from "../db/db";
-// import { createSession, channelExist } from "../session/session";
-// import { userExists, userSessionAuth } from "../users/users";
-import validator from "validator";
 import { channelExist, channelsPerUser } from "../channels/channels";
 import { loggedUsers } from "../users/users";
 
@@ -9,34 +6,6 @@ export const commands = new Map();
 commands.set("ping", (ws: WebSocket, username: string, args: Array<String>) => {
     ws.send("pong!");
 });
-
-commands.set(
-    "regi",
-    async (ws: WebSocket, username: string, args: Array<String>) => {
-        if (args[1]) {
-            const type = args[1];
-            if (type == "chan") {
-                if (args[2]) {
-                    const channelName = validator
-                        .escape(String(args[2]))
-                        .replace(" ", "_")
-                        .toLocaleLowerCase();
-
-                    if (!(await channelExist(String(channelName)))) {
-                        sendSQL(
-                            `INSERT INTO channels (name) VALUES ('${channelName}')`
-                        );
-                        ws.send(`regi,chan,succ,${channelName}`);
-                    } else {
-                        ws.send("regi,chan,fail,exist");
-                    }
-                }
-            } else {
-                ws.send("regi,fail,cmdp");
-            }
-        }
-    }
-);
 
 commands.set(
     "get",
