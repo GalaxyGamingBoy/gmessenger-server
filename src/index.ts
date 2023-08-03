@@ -217,7 +217,7 @@ app.get('/get/channels', async (_, res) => {
     res.status(200).json({ result: true, channels: query.map((e) => e.name) })
 })
 
-app.get('/get/channels/subscribed', passport.authenticate('jwt', { session: false }), (req: JWTRequest, res) => {
+app.get('/get/subscribed', passport.authenticate('jwt', { session: false }), (req: JWTRequest, res) => {
     res.status(200).json({ result: true, channels: channelsPerUser.get(req.user.username) })
 })
 // Express server
