@@ -90,13 +90,14 @@ Returns:
 
 ### Get channels\*
 
-`/register/channel` **GET** method.
+`/get/channels` **GET** method.
 
 Returns:
 `200`
 
 ```json
 {
+  "result": true,
   "channels": []
 }
 ```

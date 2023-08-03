@@ -8,27 +8,6 @@ commands.set("ping", (ws: WebSocket, username: string, args: Array<String>) => {
 });
 
 commands.set(
-    "get",
-    async (ws: WebSocket, username: string, args: Array<String>) => {
-        if (args[1]) {
-            const type = args[1];
-            if (type == "chan") {
-                const query = JSON.parse(
-                    await sendSQL("SELECT name FROM channels;")
-                ) as Array<{ name: string }>;
-                ws.send(`get,chan,${Buffer.from(JSON.stringify(query.map((e) => e.name))).toString("base64")}`);
-            } else if (type == "sub_chan") {
-                ws.send(`get,sub_chan,${Buffer.from(JSON.stringify(channelsPerUser.get(username))).toString("base64")}`);
-            } else {
-                ws.send("get,fail,cmdp");
-            }
-        } else {
-            ws.send("get,fail,cmdp");
-        }
-    }
-);
-
-commands.set(
     "omsg",
     async (ws: WebSocket, username: string, args: Array<String>) => {
         if (args[1] && args[2]) {

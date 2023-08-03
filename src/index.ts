@@ -10,6 +10,7 @@ import { Request } from "express";
 import { channelExist, channelsPerUser, loadChannels } from "./channels/channels";
 import { compare, genSalt, hash } from "bcrypt";
 import { IncomingMessage } from "http";
+import { JWTRequest } from "./types";
 import { loggedUsers, userExists } from "./users/users";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import passport from "passport";
@@ -19,12 +20,6 @@ require("dotenv").config();
 const app = express();
 app.use(bp.json());
 app.use(cors());
-
-export interface JWTRequest extends Request {
-    user: {
-        username: string
-    }
-}
 
 // Add passport
 passport.use(new Strategy({
@@ -215,6 +210,16 @@ app.post('/unsubscribe/channel', passport.authenticate('jwt', { session: false }
     }
 })
 
+app.get('/get/channels', async (_, res) => {
+    const query = JSON.parse(
+        await sendSQL("SELECT name FROM channels;")
+    ) as Array<{ name: string }>;
+    res.status(200).json({ result: true, channels: query.map((e) => e.name) })
+})
+
+app.get('/get/channels/subscribed', passport.authenticate('jwt', { session: false }), (req: JWTRequest, res) => {
+    res.status(200).json({ result: true, channels: channelsPerUser.get(req.user.username) })
+})
 // Express server
 const expressServer = app.listen(process.env.PORT || 8080, () =>
     console.log(`Server started in: ${process.env.PORT || 8080}!`)
